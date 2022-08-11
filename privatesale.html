@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="fonts/stylesheet.css" type="text/css" />
+	<link rel="stylesheet" href="new.css" type="text/css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>NVRO - Charity token for new model crowdfunding ecosystem for supporting tokenomics environment</title>
+	<link rel="icon" type="image/png" href="images/favicon.png">
+
+
+</head>
+<body style="background:#000000">
+  <section id="header" class="section">
+    <div class="section__wrapper">
+      <div class="header">
+        <div class="header__logo">
+          <img src="images/logo-nvro.png" class="logo" alt="NVRO logo" />
+          <img src="images/logo-nvro-inverse.png" class="logo logo--inverse" alt="NVRO logo" />
+        </div>
+        <ul class="header__menu menu">
+          
+        </ul>
+        <div class="header__action">
+          <button class="button" onclick="document.location='https://nvro.org'">
+            Go to Website
+          </button>
+        </div>
+      </div>
+      <div class="header header--mobile">
+        <div class="header__logo">
+          <img src="images/logo-nvro.png" class="logo" alt="NVRO logo" />
+          <img src="images/logo-nvro-inverse.png" class="logo logo--inverse" alt="NVRO logo" />
+        </div>
+        <input id="menu-toggle" type="checkbox" class="header__menu-toggle" />
+        <label for="menu-toggle" class="header__menu-toggle-button">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        <ul class="header__menu menu">
+          <li class="menu__item">
+            <button class="button" onclick="document.location='https://nvro.org'">
+               Go to Website
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+	<section id="home" class="section">
+    <div class="section__wrapper">
+      <div class="content">
+        <h1>
+          Private Sale
+        </h1>
+        <h4>
+          Join the NVRO community and contribute to create zero waste environment<br />
+          through building our next generations character.
+        </h4>
+         <button class="button" onclick="toggleWaitlistPopup()">
+          Register
+        </button>
+      </div>
+      <div class="action" style="margin-top:-50px;">
+       
+      </div>
+    </div>
+  </section>
+  <section id="popup-waitlist" class="popup">
+    <div class="wrapper">
+      <!-- ko ifnot: sent -->
+      <form class="form">
+        <h5 class="form__title">
+          Be the first people to get NVRO token!
+        </h5>
+        <p class="form__description">
+          Drop your details below to be part of build a better place to live Start Now.
+        </p>
+        <input type="text" class="form__input" placeholder="Your name" 
+            data-bind="value:name"/>
+        <input type="email" class="form__input" placeholder="Your email address" 
+        data-bind="value:email"/>
+         <input type="text" class="form__input" placeholder="Your Whatsapp Number" 
+        data-bind="value:wa"/>
+        <input type="text" class="form__input" placeholder="Your BSC Wallet Address" 
+        data-bind="value:wallet"/>
+        <p style="margin:0;font-size:10px;padding-top:5px;">* Your Metamask Wallet Address</p>
+        <input type="button" class="form__button button" value="Join the waitlist" data-bind="click: submit"/>
+
+      </form>
+      <!-- /ko -->
+      <!-- ko if: sent -->
+      <form class="form">
+        <h5 class="form__title">
+          Thank you!
+        </h5>
+        <p class="form__description">
+          We have sent your invitation to your email
+        </p>
+        <input type="button" class="form__button button" value="Close" 
+        data-bind="click: close_popup"/>
+      </form>
+      <!-- /ko -->
+
+    </div>
+  </section>
+   <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js'></script>
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const header = document.getElementById('header');
+    const popupWaitlist = document.getElementById('popup-waitlist');
+    const popupContribute = document.getElementById('popup-contribute');
+
+    function readMoreRoadmap(e) {
+      e.classList.add('roadmap__list-link--hide')
+      const contentDOM = e.parentElement;
+      const listDOMs = contentDOM.querySelectorAll('.roadmap__list-item--hide');
+      console.log(contentDOM)
+      console.log(listDOMs)
+
+      listDOMs.forEach(function(listDOM) {
+        listDOM.classList.remove('roadmap__list-item--hide');
+      });
+    }
+
+    function toggleWaitlistPopup() {
+      document.body.classList.toggle('lock-scroll');
+      popupWaitlist.classList.toggle('popup--open');
+    }
+
+    function toggleContributePopup() {
+      document.body.classList.toggle('lock-scroll');
+      popupContribute.classList.toggle('popup--open');
+    }
+   
+    
+    window.addEventListener('scroll', function(e) {
+     
+      if(scrollY > header.offsetHeight) {
+        header.classList.add('section--sticky')
+      } else {
+        header.classList.remove('section--sticky')
+      }
+    });
+  </script>
+  <script>
+    const Model = function(){
+      const self = this;
+      this.name =  ko.observable('');
+      this.email = ko.observable('');
+      this.wallet = ko.observable('');
+      this.wa = ko.observable('');
+      this.sent = ko.observable(false);
+      this.close_popup = ()=>{
+        popupWaitlist.classList.remove('popup--open');
+        document.body.classList.remove('lock-scroll');
+      };
+      this.submit = () => {
+        self.sent(true);
+        if(self.name().length === 0 && self.email().length === 0) return;
+        if(self.wa().length === 0 && self.address().length === 0) return;
+        axios.post('https://wl.nvro.org/privatesale/submit', {
+            name: self.name(),
+            email: self.email(),
+            wa: self.wa(),
+            wallet: self.wallet()
+          })
+          .then(function (response) {
+            console.log({response});
+
+          })
+          .catch(function (error) {
+            console.log({error});
+          });
+      }
+    }
+    
+    const model = new Model();
+    ko.applyBindings(model);
+   
+   
+  </script>
+</body>
+</html>
