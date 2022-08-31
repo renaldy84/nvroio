@@ -365,7 +365,7 @@ html, body {
 }
 
 .partner__photo {
-  /* Pakai 100% jika banyak logo */
+  /* Pakai 100% untuk banyak logo */
   align-items: center;
   width: 250px;
 }
